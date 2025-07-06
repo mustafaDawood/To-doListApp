@@ -9,26 +9,26 @@ import SwiftUI
 
 struct ListView: View {
     
-    @State var items : [String] = [
-    "first items",
-    "second item",
-    "third item"
-    ]
+    @EnvironmentObject var listViewModel : ListViewModel
+    
     var body: some View {
         List{
-            ForEach(items, id: \.self) { item in
-                ListRowView(Title: item)
+            ForEach(listViewModel.items) { item in
+                ListRowView(item: item)
             }
+            .onDelete(perform: listViewModel.deleteItems)
+            .onMove(perform: listViewModel.moveItems)
         }
         .listStyle(PlainListStyle())
         .navigationTitle("Todo List 📝")
         .navigationBarItems(leading: EditButton(), trailing:NavigationLink("Add", destination: AddTaskView()))
+        
     }
 }
 
 #Preview {
     NavigationView{
         ListView()
-    }
+    }.environmentObject(ListViewModel())
     
 }
